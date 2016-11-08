@@ -7,14 +7,17 @@
 using namespace std;
 int main()
 {
-	cout << "链表主要函数测试" << endl;
+	cout << "链表主要函数测试" << endl << endl;
 	//新建一个空链表
 	LinkedList list;
+	//初始链表测试长度
+	const int N = 20;
 	//测试push_back
-	for (int i=0;i<1000;i++)
+	for (int i=0;i<N;i++)
 	{
 		list.push_back(i);
 	}
+	cout << "初始化一个链表" << endl;
 	list.dispaly();
 
 	//测试pop_back
