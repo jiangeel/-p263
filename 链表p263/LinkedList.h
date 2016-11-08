@@ -16,6 +16,11 @@ public:
 private:
 	Node * front;//头指针
 	Node * back;//尾指针
+	/*
+	由于部分函数为只读(添加const和&引用),
+	遍历时无法对Current变量进行操作
+	只能在函数内部申请Current指针使用.
+	*/
 	//Node * current;//标记当前位置指针
 	unsigned int size;//链表节点数
 };
