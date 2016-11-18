@@ -12,6 +12,12 @@ public:
 	bool isAscOder()const;//判断链表内是否是升序
 	void reserve();//反转整个链表
 	void dispaly()const;//输出所有元素
+	LinkedList &operator=(const LinkedList &L1);//重载等号实现深拷贝
+	LinkedList(int a[], const unsigned int &len);//用一个数组初始化一个链表
+	LinkedList sortByAsc()const;//将链表升序排列,并返回一个新的链表
+	LinkedList merge(const LinkedList &L);//将链表L融合进原链表,合并后仍为升序
+	LinkedList(const LinkedList& L);//拷贝构造函数
+
 	~LinkedList();
 private:
 	Node * front;//头指针

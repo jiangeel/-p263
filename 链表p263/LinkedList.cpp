@@ -198,6 +198,160 @@ void LinkedList::dispaly() const
 }
 
 
+//拷贝构造函数实现深拷贝
+LinkedList::LinkedList(const LinkedList& L)
+{
+	Node *current = L.front;
+	size = 0;
+	front = NULL;
+	back = NULL;
+	while (current != NULL)//遍历整个链表，分别复制每个节点
+	{
+		this->push_back(current->value);
+		current = current->next;
+	}
+}
+
+//用一个静态数组初始化链表的构造函数
+LinkedList::LinkedList(int a[], const unsigned int &len)
+{
+	front = NULL;
+	back = NULL;
+	size = 0;
+	for (unsigned int i = 0; i < len; i++)
+	{
+		this->push_back(a[i]);//将数组所有元素依次插入至链表末尾
+	}
+}
+
+//将链表升序排列
+LinkedList LinkedList::sortByAsc() const
+{
+	if (size == 0 || size == 1)//长度为0或1的话无需排序
+	{
+		return *this;
+	}
+	LinkedList L2 = *this;//为了不破坏原数组,先复制一份
+
+						  //在尾部和首部分别添加一个空白节点
+	Node *b = new Node(10086, NULL);
+	Node *p = new Node(10010, L2.front);
+	L2.front = p;
+	L2.back->next = b;
+	L2.back = b;
+	//遍历链表,寻找最小的节点,并将其移到尾空白节点之后
+	while (L2.front->next != b)
+	{
+		p = L2.front->next;
+
+		Node *current = p;
+		Node *previous = L2.front;
+		Node *min = p;
+		Node *minPre = L2.front;
+		//寻找值最小的节点,并记录为min
+		while (current != b)
+		{
+			if (current->value <= min->value)
+			{
+				min = current;
+				minPre = previous;
+			}
+			previous = current;
+			current = current->next;
+		}
+		//将min节点移动到尾部空白节点之后
+		minPre->next = min->next;
+		L2.back->next = min;
+		L2.back = min;
+
+	}
+	//循环结束后链表为两个空白节点+已排序完成的链表
+	//删除首空白节点
+	delete L2.front;
+	//头指针指向第一个有意义节点
+	L2.front = b->next;
+	//尾指针指向最后一个有意义节点
+	L2.back->next = NULL;
+	//删除尾空白节点
+	delete b;
+
+
+	return L2;
+}
+
+//将链表L融合进原链表,合并后仍为升序
+LinkedList LinkedList::merge(const LinkedList & L)
+{
+	//为不破坏数组,先复制一份原来链表
+	LinkedList L2 = L;
+	LinkedList L3 = *this;
+
+	Node *current2 = L2.front;
+	Node *previous2 = L2.front;
+	Node *current3 = L3.front;
+	Node *previous3 = L3.front;
+
+	//L2或L3任一链表遍历完即停止循环,并将剩余的节点连到最后
+	while (current3 != NULL&&current2 != NULL)
+	{
+
+		if (current2->value >= current3->value)//找到L2首节点的插入位置
+		{
+			previous3 = current3;
+			current3 = current3->next;
+			continue;
+		}
+		previous2 = current2;
+		//指向下一个待插入的节点
+		current2 = current2->next;
+		//L2的首节点插入到L3中
+		previous2->next = current3;
+		//如果带插入节点比L3的首节点还小的话,要修改L3的头指针
+		if (previous3 == L3.front)
+		{
+			L3.front = previous2;
+			previous3 = previous2;
+		}
+		else
+		{
+			previous3->next = previous2;
+			previous3 = previous2;
+		}
+
+	}
+	if (current2 != NULL)//最后如果L2有剩余
+	{
+		previous3->next = current2;//把L2剩余的加上
+		L3.back = L2.back;
+	}
+	L2.front = NULL;//L2已经并入L3，因此L2已经为空.(不加的话L2析构时会出问题)
+	return L3;
+}
+
+
+//重载赋值符号
+LinkedList & LinkedList::operator=(const LinkedList & L1)
+{
+	front = NULL;
+	back = NULL;
+	size = 0;
+	Node *current = L1.front;
+	while (current != NULL)//将L1的每一个节点赋值一遍
+	{
+		this->push_back(current->value);
+		current = current->next;
+	}
+	return *this;
+}
+
+//析构函数,从头依次删除每一个节点
 LinkedList::~LinkedList()
 {
+	Node *current = front;
+	while (front != NULL)
+	{
+		current = current->next;
+		delete front;
+		front = current;
+	}
 }
